@@ -5,8 +5,13 @@ import domain.exception.UserInvalidPasswordException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,7 +21,7 @@ import java.util.regex.Pattern;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -33,8 +38,10 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String password;
+    private UserRoles roles;
     @CreationTimestamp
     private LocalDateTime createdAt;
+    private Boolean isEnabled = false;
 
     public User(String firstName, String lastName, String email, String password){
         this.firstName = firstName;
@@ -65,6 +72,18 @@ public class User {
         this.password = password;
     }
 
+    public void enableAccount(){
+        this.isEnabled = true;
+    }
+
+    public boolean isAdmin(){
+        return this.roles == UserRoles.ADMIN;
+    }
+
+    public void setAsAdmin(){
+        this.roles = UserRoles.ADMIN;
+    }
+
     private boolean isPasswordInvalid(String password){
 
         //Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character
@@ -83,5 +102,38 @@ public class User {
         return !m.matches();
     }
 
+    //spring security
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if(this.roles == UserRoles.ADMIN){
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.isEnabled;
+    }
 }

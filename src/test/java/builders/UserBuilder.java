@@ -1,6 +1,7 @@
 package builders;
 
 import domain.entity.User;
+import domain.entity.UserRoles;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -12,7 +13,9 @@ public class UserBuilder {
     private String lastName = "random";
     private String email = "user@email.com";
     private String password = "Aa123456!";
+    private UserRoles userRoles = null;
     private final LocalDateTime createdAt = LocalDateTime.now();
+    private boolean isEnabled = false;
 
     public UserBuilder withId(UUID id){
         this.id = id;
@@ -39,8 +42,18 @@ public class UserBuilder {
         return this;
     }
 
+    public UserBuilder asAdmin(){
+        this.userRoles = UserRoles.ADMIN;
+        return this;
+    }
+
+    public UserBuilder enabled(){
+        this.isEnabled = true;
+        return this;
+    }
+
     public User build(){
-        return new User(id, firstName, lastName, email, password, createdAt);
+        return new User(id, firstName, lastName, email, password,userRoles, createdAt, isEnabled);
     }
 
 }

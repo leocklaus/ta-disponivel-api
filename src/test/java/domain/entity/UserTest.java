@@ -2,6 +2,7 @@ package domain.entity;
 
 import domain.exception.UserInvalidEmailException;
 import domain.exception.UserInvalidPasswordException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,14 +10,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
 
+    private final String firstName = "user";
+    private final String lastName = "random";
+    private final String email = "user@email.com";
+    private final String password = "Aa123456!";
+    private User user;
+
+    @BeforeEach
+    public void setUp(){
+        this.user = new User(firstName, lastName, email, password);
+    }
+
     @Test
     void shouldCreateANewUserCorrectly(){
-        String firstName = "user";
-        String lastName = "random";
-        String email = "user@email.com";
-        String password = "Aa123456!";
-
-        User user = new User(firstName, lastName, email, password);
 
         assertThat(user.getFirstName())
                 .isEqualTo(firstName);
@@ -34,14 +40,8 @@ class UserTest {
 
     @Test
     public void shouldReturnFullName(){
-        String firstName = "user";
-        String lastName = "random";
-        String email = "user@email.com";
-        String password = "Aa123456!";
 
         String fullName = firstName + " " + lastName;
-
-        User user = new User(firstName, lastName, email, password);
 
         assertThat(user.getName())
                 .isEqualTo(fullName);
@@ -49,24 +49,18 @@ class UserTest {
 
     @Test
     void shouldThrowExceptionIfEmailFormatIsInvalid(){
-        String firstName = "user";
-        String lastName = "random";
-        String email = "email";
-        String password = "Aa123456!";
 
+        String email = "email";
 
         assertThrows(UserInvalidEmailException.class, ()->{
-            User user = new User(firstName, lastName, email, password);
+            new User(firstName, lastName, email, password);
         });
     }
 
     @Test
     public void shouldCreateUserIfValidEmail(){
-        String firstName = "user";
-        String lastName = "random";
-        String email = "user@email.com";
-        String password = "Aa123456!";
 
+        String email = "user@email.com";
 
         User user = new User(firstName, lastName, email, password);
 
@@ -76,27 +70,59 @@ class UserTest {
 
     @Test
     public void shouldThrowExceptionIfPasswordFormatIsInvalid(){
-        String firstName = "user";
-        String lastName = "random";
-        String email = "email@email.com";
+
         String password = "123456!";
 
-
         assertThrows(UserInvalidPasswordException.class, ()->{
-            User user = new User(firstName, lastName, email, password);
+            new User(firstName, lastName, email, password);
         });
     }
 
     @Test
     public void shouldCreateUserCorrectlyIfPasswordFormatIsValid(){
-        String firstName = "user";
-        String lastName = "random";
-        String email = "user@email.com";
-        String password = "Aa123456!";
 
+        String password = "Aa123456!";
 
         User user = new User(firstName, lastName, email, password);
 
+    }
+
+    @Test
+    public void shouldCreateUserInitiallyDisabled(){
+
+        User user = new User(firstName, lastName, email, password);
+
+        assertThat(user.isEnabled())
+                .isFalse();
+    }
+
+    @Test
+    public void shouldEnableUser(){
+
+        User user = new User(firstName, lastName, email, password);
+        user.enableAccount();
+
+        assertThat(user.isEnabled())
+                .isTrue();
+    }
+
+    @Test
+    public void shouldNotBeCreatedAsAdmin(){
+
+        User user = new User(firstName, lastName, email, password);
+
+        assertThat(user.isAdmin())
+                .isFalse();
+    }
+
+    @Test
+    public void shouldMakeUserAdminWhenRequested(){
+
+        User user = new User(firstName, lastName, email, password);
+        user.setAsAdmin();
+
+        assertThat(user.isAdmin())
+                .isTrue();
     }
 
 }
