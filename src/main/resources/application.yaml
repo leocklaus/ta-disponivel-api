@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: ta-disponivel-api
+  jpa:
+    hibernate:
+      ddl-auto: update
+  mail:
+    host: localhost
+    port: 1025
+    username: lck
+    password: lck
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enabled: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
+api:
+  security:
+    token:
+      secret: changetoken
+      issuer: ta-disponivel-api
+      expiration: -03:00
+
