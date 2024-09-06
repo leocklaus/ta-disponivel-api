@@ -8,3 +8,9 @@ services:
       - 'MYSQL_USER=myuser'
     ports:
       - '3306'
+  mail-dev:
+    container_name: mail-dev-bsn
+    image: maildev/maildev
+    ports:
+      - 1080:1080
+      - 1025:1025
