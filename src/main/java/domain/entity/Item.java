@@ -1,5 +1,6 @@
 package domain.entity;
 
+import api.dto.ItemInput;
 import domain.exception.ItemAlreadyDonatedException;
 import domain.exception.ItemNotAvailableException;
 import domain.exception.ItemReservedByDifferentUserException;
@@ -32,11 +33,19 @@ public class Item {
     @Setter
     private String description;
 
-    @Column(nullable = false)
     @Setter
+    @ManyToOne
+    @JoinColumn(name = "original_owner_id")
     private User originalOwner;
 
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "reserved_by_id")
     private User reservedBy;
+
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "new_owner_id")
     private User newOwner;
 
     @Column(nullable = false)
@@ -50,6 +59,13 @@ public class Item {
     public Item(String name, String description, User originalOwner){
         this.name = name;
         this.description = description;
+        this.originalOwner = originalOwner;
+        setAsAvailable();
+    }
+
+    public Item(ItemInput input, User originalOwner){
+        this.name = input.name();
+        this.description = input.description();
         this.originalOwner = originalOwner;
         setAsAvailable();
     }
