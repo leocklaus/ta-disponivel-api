@@ -14,13 +14,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ActivationCode extends Code{
 
-    @Enumerated(EnumType.STRING)
-    private CodeType codeType;
-
     public ActivationCode(User user){
-        super(user);
-        this.codeType = CodeType.ACTIVATION;
+        super(user, CodeType.ACTIVATION);
         generateCode(5);
+        setFiveMinutesDuration();
     }
 
 }

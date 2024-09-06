@@ -28,13 +28,17 @@ public abstract class Code {
     @JoinColumn(name = "userId", nullable = false)
     private User user;
 
+    @Enumerated(EnumType.STRING)
+    private CodeType codeType;
+
     @CreationTimestamp
     private Instant createAt;
 
     private Instant validUntil;
 
-    public Code(User user){
+    public Code(User user, CodeType codeType){
         this.user = user;
+        this.codeType = codeType;
     }
 
     public void setFiveMinutesDuration(){
@@ -47,6 +51,18 @@ public abstract class Code {
 
     public boolean isExpired(){
         return Instant.now().isAfter(validUntil);
+    }
+
+    public String getTemplateName(){
+        return this.codeType.getTemplateName();
+    }
+
+    public String getURL(){
+        return this.codeType.getUrl();
+    }
+
+    public String getSubject(){
+        return this.codeType.getSubject();
     }
 
     public void generateCode(int length){

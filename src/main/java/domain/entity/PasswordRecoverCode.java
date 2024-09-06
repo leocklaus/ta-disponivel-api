@@ -12,12 +12,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PasswordRecoverCode extends Code{
-    @Enumerated(EnumType.STRING)
-    private CodeType codeType;
 
     public PasswordRecoverCode(User user){
-        super(user);
-        this.codeType = CodeType.PASSWORD_RECOVER;
+        super(user, CodeType.PASSWORD_RECOVER);
         generateCode(5);
+        setTenMinutesDuration();
     }
 }
