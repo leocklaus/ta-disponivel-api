@@ -1,5 +1,6 @@
 package domain.entity;
 
+import api.dto.UserInput;
 import domain.exception.UserInvalidEmailException;
 import domain.exception.UserInvalidPasswordException;
 import jakarta.persistence.*;
@@ -50,6 +51,13 @@ public class User implements UserDetails {
         setPassword(password);
     }
 
+    public User(UserInput userInput){
+        this.firstName = userInput.firstName();
+        this.lastName = userInput.lastName();
+        setEmail(userInput.email());
+        setPassword(userInput.password());
+    }
+
     public String getName(){
         return this.firstName + " " + this.getLastName();
     }
@@ -70,6 +78,10 @@ public class User implements UserDetails {
         }
 
         this.password = password;
+    }
+
+    public void setEncodedPassword(String encodedPassword){
+        this.password = encodedPassword;
     }
 
     public void enableAccount(){
