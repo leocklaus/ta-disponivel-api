@@ -1,5 +1,6 @@
 package domain.entity;
 
+import api.dto.AddressInput;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
@@ -34,4 +35,15 @@ public class Address {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+
+    public void update(AddressInput input){
+        setCEP(input.cep());
+        setStreet(input.street());
+        setNeighbourhood(input.neighbourhood());
+        setCity(input.city());
+        setState(input.state());
+        setNumber(input.number());
+        setExtraInfo(input.extraInfo());
+    }
 }
