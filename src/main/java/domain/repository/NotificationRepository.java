@@ -13,4 +13,7 @@ public interface NotificationRepository extends JpaRepository<Notification, UUID
     @Query(value = "SELECT * FROM notification n WHERE n.to = ?1 LIMIT 5", nativeQuery = true)
     List<Notification> getLastFiveUserNotifications(UUID to);
 
+    @Query("SELECT n FROM notification n WHERE n.to = ?1")
+    List<Notification> findAllByUser(User user);
+
 }

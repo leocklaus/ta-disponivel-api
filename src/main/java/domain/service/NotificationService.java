@@ -38,10 +38,23 @@ public class NotificationService {
                 .map(Notification::getNotification)
                 .toList();
     }
+
+    public List<NotificationOutput> getAllLoggedUserNotifications(){
+        User user = userService.getLoggedUserOrThrowsExceptionIfNotExists();
+        List<Notification> notifications = notificationRepository.findAllByUser(user);
+
+        return notifications.stream()
+                .map(Notification::getNotification)
+                .toList();
+    }
+
     public void setNotificationAsRead(UUID id){
         Notification notification = getNotificationByIdOrThrowsException(id);
         notification.setAsRead();
         notificationRepository.save(notification);
     }
 
+    public void deleteNotifications(UUID notificationsId) {
+        notificationRepository.deleteById(notificationsId);
+    }
 }
