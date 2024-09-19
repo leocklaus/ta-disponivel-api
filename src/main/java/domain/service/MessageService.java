@@ -35,10 +35,10 @@ public class MessageService {
         return true;
     }
 
-    public void getNewMessages(Long lastMessageReceivedId){
+    public List<Message> getNewMessages(Long lastMessageReceivedId){
         User user = userService.getLoggedUserOrThrowsExceptionIfNotExists();
 
-        List<Message> newMessages = messageRepository.getNewMessages(user.getId(), lastMessageReceivedId);
+        return messageRepository.getNewMessages(user.getId(), lastMessageReceivedId);
     }
 
     public void getUserChats(){
@@ -46,11 +46,11 @@ public class MessageService {
 
     }
 
-    public void getChatMessages(UUID secondUserId){
+    public List<Message> getChatMessages(UUID secondUserId){
         User loggedUser = userService.getLoggedUserOrThrowsExceptionIfNotExists();
         User talkingTo = userService.getUserByIdOrThrowsExceptionIfNotExists(secondUserId);
 
-        //query db
+        return messageRepository.getMessagesByChat(loggedUser.getId(), talkingTo.getId());
     }
 
     public Message getMessageById(Long id){

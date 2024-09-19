@@ -1,5 +1,6 @@
 package domain.service;
 
+import api.dto.MessageInput;
 import domain.entity.Message;
 import domain.entity.User;
 import domain.exception.UserNotAuthorizedException;
@@ -16,17 +17,17 @@ public class SendMessageUseCase {
     private final UserService userService;
     private final MessageRepository repository;
 
-    private void send(String msg, UUID toUser){
+    public Message send(MessageInput messageInput){
         User from = userService.getLoggedUserOrThrowsExceptionIfNotExists();
-        User to = userService.getUserByIdOrThrowsExceptionIfNotExists(toUser);
+        User to = userService.getUserByIdOrThrowsExceptionIfNotExists(messageInput.userId());
 
         if(isUserSendingAMessageToHimself(from, to)){
             throw new UserNotAuthorizedException();
         }
 
-        Message message = new Message(from, to, msg);
+        Message message = new Message(from, to, messageInput.message());
 
-        repository.save(message);
+        return repository.save(message);
 
     }
 
